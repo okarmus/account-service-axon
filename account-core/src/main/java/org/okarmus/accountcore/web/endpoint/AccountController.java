@@ -4,14 +4,13 @@ import javaslang.control.Try;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.common.IdentifierFactory;
 import org.okarmus.accountcore.core.command.CreateAccountCommand;
+import org.okarmus.accountcore.core.command.PutMoneyCommand;
 import org.okarmus.accountcore.web.dto.AccountCreateDTO;
+import org.okarmus.accountcore.web.dto.MoneyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -37,6 +36,16 @@ class AccountController {
         return Try.of(() -> commandGateway.send(createAccountCommand).get())
             .map(obj -> successResponse())
             .getOrElseGet(this::errorResponse);
+    }
+
+    @RequestMapping(value = "/{accountNumber}/money-send", method = RequestMethod.POST)
+    public ResponseEntity<String> putMoney(@PathVariable long accountNumber, @RequestBody MoneyDTO money) {
+        final PutMoneyCommand command = PutMoneyCommand.builder()
+                .accountNumber(accountNumber)
+                .value(money.getValue())
+                .build();
+
+        return Try.of(commandGateway.send(command);
     }
 
     private ResponseEntity<String> successResponse() {
