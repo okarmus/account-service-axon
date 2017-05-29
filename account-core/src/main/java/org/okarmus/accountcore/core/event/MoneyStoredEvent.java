@@ -5,13 +5,12 @@ import lombok.Value;
 import lombok.experimental.Accessors;
 import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
-@Builder
 @Value
 @Accessors(fluent = true)
-public class AccountCreatedEvent {
+@Builder
+public class MoneyStoredEvent {
 
     @TargetAggregateIdentifier
     long accountNumber;
-    String ownerName;
-    String ownerSurname;
+    long value;
 }

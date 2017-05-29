@@ -1,0 +1,15 @@
+database:
+  image: mysql
+  container_name: database.dev
+  command: mysqld --user=root --verbose
+  ports:
+    - "3306:3306"
+  environment:
+    MYSQL_DATABASE: "account"
+    MYSQL_USER: "admin"
+    MYSQL_PASSWORD: "admin"
+    MYSQL_ROOT_PASSWORD: "admin"
+    MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+
+# Usage: 1) docker-compose build 2) docker-compose up

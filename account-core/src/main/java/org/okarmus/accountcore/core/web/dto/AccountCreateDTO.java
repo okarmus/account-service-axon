@@ -1,4 +1,4 @@
-package org.okarmus.accountcore.web.dto;
+package org.okarmus.accountcore.core.web.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

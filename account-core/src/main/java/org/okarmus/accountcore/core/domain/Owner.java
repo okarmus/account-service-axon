@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Value
 @Accessors(fluent = true)
 @Builder
-public class Owner {
+class Owner {
 
     String name;
     String surname;
