@@ -25,12 +25,17 @@ class Statistic {
     long accountsCreated;
     long accountsDeactivated;
 
-    void addMoneyAdded(long newMoney) {      //TODO question is how it will work in multi threaded environment
-        this.moneyAdded += newMoney;
-        this.balance += newMoney;
-    }
-
     void accountCreated() {
         this.accountsCreated++;
+    }
+
+    void addMoney(long money) {      //TODO question is how it will work in multi threaded environment
+        this.moneyAdded += money;
+        this.balance += money;
+    }
+
+    void substractMoney(long money) {
+        this.moneyRemoved += money;
+        this.balance -= money;
     }
 }

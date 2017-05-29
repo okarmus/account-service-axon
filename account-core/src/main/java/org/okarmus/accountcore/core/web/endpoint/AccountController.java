@@ -4,56 +4,64 @@ import javaslang.control.Try;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.okarmus.accountcore.core.command.CreateAccountCommand;
 import org.okarmus.accountcore.core.command.PutMoneyCommand;
+import org.okarmus.accountcore.core.command.SubstractMoneyCommand;
 import org.okarmus.accountcore.core.web.dto.AccountCreateDTO;
 import org.okarmus.accountcore.core.web.dto.MoneyDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/account")
 class AccountController {
 
     private final CommandGateway commandGateway;
+    private final ResponseHandler responseHandler;
 
     @Autowired
-    AccountController(CommandGateway commandGateway) {
+    AccountController(CommandGateway commandGateway, ResponseHandler responseHandler) {
         this.commandGateway = commandGateway;
+        this.responseHandler = responseHandler;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = POST)
     ResponseEntity<String> createAccount(@RequestBody AccountCreateDTO createDTO) {
-        final CreateAccountCommand createAccountCommand = CreateAccountCommand.builder()
+        final CreateAccountCommand command = CreateAccountCommand.builder()
                 .ownerName(createDTO.getOwnerName())
                 .ownerSurname(createDTO.getOwnerSurname())
                 .accountNumber(createDTO.getAccountNumber())
                 .build();
 
-        return Try.of(() -> commandGateway.send(createAccountCommand).get())
-            .map(result -> successResponse("Account has been created"))
-            .getOrElseGet(this::errorResponse);
+        return sendCommand(command, "Account has been created");
     }
 
-    @RequestMapping(value = "/{accountNumber}/put-money", method = RequestMethod.POST)
+    @RequestMapping(value = "/{accountNumber}/put-money", method = POST)
     ResponseEntity<String> putMoney(@PathVariable long accountNumber, @RequestBody MoneyDTO money) {
         final PutMoneyCommand command = PutMoneyCommand.builder()
                 .accountNumber(accountNumber)
                 .value(money.getValue())
                 .build();
 
-        return Try.of(() -> commandGateway.send(command).get())
-                .map(result -> successResponse("Money has been sent"))
-                .getOrElseGet(this::errorResponse);
+        return sendCommand(command, "Money has been sent");
     }
 
-    private ResponseEntity<String> successResponse(String message) {
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+    @RequestMapping(value = "/{accountNumber}/substract-money", method = POST)
+    ResponseEntity<String> substractMoney(@PathVariable long accountNumber, @RequestBody MoneyDTO money) {
+        final SubstractMoneyCommand command = SubstractMoneyCommand.builder()
+                .accountNumber(accountNumber)
+                .value(money.getValue())
+                .build();
+
+        return sendCommand(command, "Money has been substracted");
     }
 
-    private ResponseEntity<String> errorResponse(Throwable throwable) {
-        throwable.printStackTrace();
-        return new ResponseEntity<>("Error occurred: " + throwable.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    private <T> ResponseEntity<String> sendCommand(T command, String successMessage) {
+        return responseHandler.handleCommandGatewayResponse(
+                Try.of(() -> commandGateway.send(command).get()),
+                successMessage
+        );
     }
 
 }
