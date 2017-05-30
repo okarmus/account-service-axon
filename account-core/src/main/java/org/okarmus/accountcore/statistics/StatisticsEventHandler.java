@@ -2,6 +2,7 @@ package org.okarmus.accountcore.statistics;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.okarmus.accountcore.core.event.AccountCreatedEvent;
+import org.okarmus.accountcore.core.event.AccountDeactivatedEvent;
 import org.okarmus.accountcore.core.event.MoneyStoredEvent;
 import org.okarmus.accountcore.core.event.MoneySubstractedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,13 @@ class StatisticsEventHandler {
     void on (AccountCreatedEvent event) {
         final Statistic statistic = findStatistic();
         statistic.accountCreated();
+        repository.save(statistic);
+    }
+
+    @EventHandler
+    void on(AccountDeactivatedEvent event) {
+        final Statistic statistic = findStatistic();
+        statistic.accountDeactivated();
         repository.save(statistic);
     }
 

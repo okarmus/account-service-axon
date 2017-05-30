@@ -3,6 +3,7 @@ package org.okarmus.accountcore.core.web.endpoint;
 import javaslang.control.Try;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.okarmus.accountcore.core.command.CreateAccountCommand;
+import org.okarmus.accountcore.core.command.DeactivateAccountCommand;
 import org.okarmus.accountcore.core.command.PutMoneyCommand;
 import org.okarmus.accountcore.core.command.SubstractMoneyCommand;
 import org.okarmus.accountcore.core.web.dto.AccountCreateDTO;
@@ -35,6 +36,15 @@ class AccountController {
                 .build();
 
         return sendCommand(command, "Account has been created");
+    }
+
+    @RequestMapping(value="/{accountNumber}/deactivate", method = POST)
+    ResponseEntity<String> deactivateAccount(@PathVariable long accountNumber) {
+        final DeactivateAccountCommand command = DeactivateAccountCommand.builder()
+                .accountNumber(accountNumber)
+                .build();
+
+        return sendCommand(command, "Account has been deactivated");
     }
 
     @RequestMapping(value = "/{accountNumber}/put-money", method = POST)

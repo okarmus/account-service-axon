@@ -8,9 +8,11 @@ import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.okarmus.accountcore.core.command.CreateAccountCommand;
+import org.okarmus.accountcore.core.command.DeactivateAccountCommand;
 import org.okarmus.accountcore.core.command.PutMoneyCommand;
 import org.okarmus.accountcore.core.command.SubstractMoneyCommand;
 import org.okarmus.accountcore.core.event.AccountCreatedEvent;
+import org.okarmus.accountcore.core.event.AccountDeactivatedEvent;
 import org.okarmus.accountcore.core.event.MoneyStoredEvent;
 import org.okarmus.accountcore.core.event.MoneySubstractedEvent;
 import org.okarmus.accountcore.core.utils.exception.AccountInactiveException;
@@ -40,6 +42,13 @@ public class Account {
                 .build();
 
         apply(event);
+    }
+
+    @CommandHandler
+    void on(DeactivateAccountCommand command) {
+        apply(AccountDeactivatedEvent.builder()
+            .accountNumber(command.accountNumber())
+            .build());
     }
 
     @CommandHandler
@@ -80,6 +89,11 @@ public class Account {
         this.owner = Owner.builder().name(event.ownerName()).surname(event.ownerSurname()).build();
         this.balance = 0;
         this.isActive = true;
+    }
+
+    @EventHandler
+    void on(AccountDeactivatedEvent event) {
+        this.isActive = false;
     }
 
     @EventHandler
