@@ -12,4 +12,13 @@ database:
     MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
 
+mongodb:
+  container_name: mongo
+  image: mongo
+  ports:
+    - "27017:27017"
+
+
+
+
 # Usage: 1) docker-compose build 2) docker-compose up
