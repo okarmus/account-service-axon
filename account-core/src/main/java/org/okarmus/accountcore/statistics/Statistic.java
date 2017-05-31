@@ -1,21 +1,18 @@
 package org.okarmus.accountcore.statistics;
 
 import lombok.*;
-import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import static lombok.AccessLevel.PROTECTED;
-
 @Builder
-@Accessors(fluent = true)
-@NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Setter
 @Entity
-class Statistic {
+public class Statistic {
 
     @Id @Column
     String date;

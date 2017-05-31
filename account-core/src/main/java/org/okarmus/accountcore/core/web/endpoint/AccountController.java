@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/account")
@@ -38,7 +40,7 @@ class AccountController {
         return sendCommand(command, "Account has been created");
     }
 
-    @RequestMapping(value="/{accountNumber}/deactivate", method = POST)
+    @RequestMapping(value="/{accountNumber}/deactivate", method = DELETE)
     ResponseEntity<String> deactivateAccount(@PathVariable long accountNumber) {
         final DeactivateAccountCommand command = DeactivateAccountCommand.builder()
                 .accountNumber(accountNumber)
@@ -47,7 +49,7 @@ class AccountController {
         return sendCommand(command, "Account has been deactivated");
     }
 
-    @RequestMapping(value = "/{accountNumber}/put-money", method = POST)
+    @RequestMapping(value = "/{accountNumber}/put-money", method = PUT)
     ResponseEntity<String> putMoney(@PathVariable long accountNumber, @RequestBody MoneyDTO money) {
         final PutMoneyCommand command = PutMoneyCommand.builder()
                 .accountNumber(accountNumber)
@@ -57,7 +59,7 @@ class AccountController {
         return sendCommand(command, "Money has been sent");
     }
 
-    @RequestMapping(value = "/{accountNumber}/substract-money", method = POST)
+    @RequestMapping(value = "/{accountNumber}/substract-money", method = PUT)
     ResponseEntity<String> substractMoney(@PathVariable long accountNumber, @RequestBody MoneyDTO money) {
         final SubstractMoneyCommand command = SubstractMoneyCommand.builder()
                 .accountNumber(accountNumber)
