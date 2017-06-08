@@ -1,6 +1,5 @@
 package org.okarmus.accountcore.statistics.web.endpoint;
 
-import org.okarmus.accountcore.core.web.dto.MoneyDTO;
 import org.okarmus.accountcore.statistics.Statistic;
 import org.okarmus.accountcore.statistics.StatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +24,6 @@ class StatisticController {
 
     @RequestMapping("/{date}")
     ResponseEntity<Statistic> findStatisticsForDate(@PathVariable String date) {
-
-        MoneyDTO money = new MoneyDTO();
-        money.setValue(1234);
-
         return statisticsRepository.findByDate(date)
                 .map(statistic -> {
                     System.out.println(statistic);
